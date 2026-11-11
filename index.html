@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif IPA - Sistem Reproduksi Manusia | MTsN 4 Serang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- html2pdf.js for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        },
+                        emeraldCustom: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 text-white p-2.5 rounded-xl flex items-center justify-center shadow-md shadow-brand-500/20">
+                    <i class="fa-solid me-0 fa-dna text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-base sm:text-lg leading-tight">KUIS INTERAKTIF IPA</h1>
+                    <p class="text-xs text-brand-600 font-medium">MTs Negeri 4 Serang</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="soundToggleBtn" onclick="toggleSound()" class="p-2 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition" title="Aktif/Nonaktifkan Suara">
+                    <i id="soundIcon" class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+                <button onclick="openTeacherModal()" class="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition border border-slate-200">
+                    <i class="fa-solid fa-user-lock"></i>
+                    <span class="hidden sm:inline">Portal Guru</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-4xl">
+
+            <!-- 1. HALAMAN AWAL (HOME) -->
+            <div id="homePage" class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in">
+                <div class="bg-gradient-to-r from-brand-700 via-brand-600 to-teal-600 text-white p-6 sm:p-10 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
+                        <i class="fa-solid fa-microscope"></i>
+                    </div>
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium tracking-wide mb-3">Kelas IX MTs - Semester 1</span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">Sistem Reproduksi Manusia</h2>
+                        <p class="mt-2 text-brand-100 text-sm sm:text-base leading-relaxed">Uji pemahaman teoritis, mekanisme biologis, dan kesehatan reproduksi manusia secara interaktif dan menyenangkan.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-8">
+                    <!-- Form Peserta -->
+                    <div class="md:col-span-7 space-y-5">
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-id-card text-brand-600"></i> Identitas Peserta Didik
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                            <input type="text" id="studentName" placeholder="Masukkan nama lengkap..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Kelas <span class="text-red-500">*</span></label>
+                            <select id="studentClass" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition text-sm bg-white">
+                                <option value="">-- Pilih Kelas IX --</option>
+                                <option value="IX-A">IX - A</option>
+                                <option value="IX-B">IX - B</option>
+                                <option value="IX-C">IX - C</option>
+                                <option value="IX-D">IX - D</option>
+                                <option value="IX-E">IX - E</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Pilih Level Kesulitan <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="selectLevel('easy')" id="btnLevelEasy" class="level-btn border-2 border-slate-200 rounded-xl p-3 text-center hover:border-emerald-500 transition cursor-pointer">
+                                    <div class="text-xs font-bold text-slate-500 uppercase">Level 1</div>
+                                    <div class="text-sm font-extrabold text-emerald-600">MUDAH</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">10 Soal</div>
+                                </button>
+                                <button type="button" onclick="selectLevel('medium')" id="btnLevelMedium" class="level-btn border-2 border-slate-200 rounded-xl p-3 text-center hover:border-amber-500 transition cursor-pointer">
+                                    <div class="text-xs font-bold text-slate-500 uppercase">Level 2</div>
+                                    <div class="text-sm font-extrabold text-amber-600">SEDANG</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">15 Soal</div>
+                                </button>
+                                <button type="button" onclick="selectLevel('hard')" id="btnLevelHard" class="level-btn border-2 border-slate-200 rounded-xl p-3 text-center hover:border-red-500 transition cursor-pointer">
+                                    <div class="text-xs font-bold text-slate-500 uppercase">Level 3</div>
+                                    <div class="text-sm font-extrabold text-red-600">SUKAR</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">20 Soal (HOTS)</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="startQuiz()" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 transition transform active:scale-98 flex items-center justify-center space-x-2 text-base">
+                                <span>MULAI KUIS SEKARANG</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Panel Ilustrasi & Info Petunjuk -->
+                    <div class="md:col-span-5 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <!-- Ilustrasi Edukatif Ilmiah (SVG Outlines Organ Sel Reproduksi) -->
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-4 text-center">
+                                <svg class="w-28 h-28 mx-auto text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="6" class="stroke-brand-500" stroke-dasharray="2 2"/>
+                                    <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.2"/>
+                                    <path d="M4 12c2-3 4-3 6 0s4 3 6 0" stroke-linecap="round"/>
+                                    <path d="M19 8c1.5 1.5 2.5 3.5 2.5 4s-1 2.5-2.5 4" stroke-linecap="round"/>
+                                    <circle cx="6" cy="6" r="1.5" fill="currentColor"/>
+                                    <path d="M7.5 7.5L10 10"/>
+                                </svg>
+                                <p class="text-xs font-semibold text-slate-600 mt-2">Struktur Sel Gamet & Sistem Reproduksi</p>
+                                <p class="text-[10px] text-slate-400">Pembelajaran Ilmiah & Biologis Edukatif</p>
+                            </div>
+
+                            <div class="space-y-2.5">
+                                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-info text-brand-500"></i> Petunjuk Pengerjaan
+                                </h4>
+                                <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside leading-relaxed">
+                                    <li>Isi Nama Lengkap dan Kelas dengan jujur.</li>
+                                    <li>Pilih level kesulitan yang ingin diuji.</li>
+                                    <li>Jawablah setiap soal pilihan ganda (A, B, C, D).</li>
+                                    <li>Setiap soal langsung dilengkapi pembahasan ilmiah.</li>
+                                    <li>Hasil pengerjaan dapat diunduh (PDF/Excel) & dicetak.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-center">
+                            <span class="text-[11px] text-slate-500 font-medium">MTs Negeri 4 Serang &copy; 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. HALAMAN SOAL KUIS -->
+            <div id="quizPage" class="hidden bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in">
+                <!-- Header Top Kuis -->
+                <div class="bg-slate-900 text-white p-4 px-6 flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center space-x-3">
+                        <span id="quizBadgeLevel" class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white">Level 1</span>
+                        <span id="quizStudentInfo" class="text-xs text-slate-300 font-medium truncate max-w-[200px]">Ahmad - IX A</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-1.5 bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 text-amber-400">
+                            <i class="fa-regular fa-clock text-xs"></i>
+                            <span id="quizTimer" class="font-mono text-sm font-bold">00:00</span>
+                        </div>
+                        <button onclick="confirmExitQuiz()" class="text-slate-400 hover:text-red-400 text-xs font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-2">
+                    <div id="quizProgressBar" class="bg-brand-600 h-2 transition-all duration-300" style="width: 0%;"></div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Soal Count & Status -->
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-500">
+                        <span>SOAL NOMOR <strong id="currentQuestionNum" class="text-brand-600 text-base">1</strong> DARI <span id="totalQuestionsNum">10</span></span>
+                        <span id="scoreTracker" class="bg-brand-50 text-brand-700 px-2.5 py-1 rounded-lg">Terjawab: <span id="answeredCount">0</span></span>
+                    </div>
+
+                    <!-- Teks Soal -->
+                    <div class="min-h-[80px]">
+                        <h3 id="questionText" class="text-base sm:text-lg font-bold text-slate-800 leading-snug">
+                            Loading pertanyaan...
+                        </h3>
+                    </div>
+
+                    <!-- Pilihan Jawaban -->
+                    <div id="optionsContainer" class="space-y-3">
+                        <!-- Options generated by JS -->
+                    </div>
+
+                    <!-- Pembahasan Box (Umpan Balik) -->
+                    <div id="feedbackBox" class="hidden p-4 rounded-xl border transition-all duration-300">
+                        <div class="flex items-start space-x-3">
+                            <div id="feedbackIcon" class="mt-0.5 text-lg"></div>
+                            <div class="space-y-1 text-xs sm:text-sm">
+                                <p id="feedbackTitle" class="font-bold"></p>
+                                <p id="feedbackExplanation" class="text-slate-700 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Navigasi -->
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                        <button id="prevBtn" onclick="navigateQuestion(-1)" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs sm:text-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+                        </button>
+
+                        <button id="nextBtn" onclick="navigateQuestion(1)" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2">
+                            <span>Berikutnya</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+
+                        <button id="submitBtn" onclick="finishQuiz()" class="hidden px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2">
+                            <span>Selesai & Lihat Hasil</span>
+                            <i class="fa-solid fa-check-double"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. HALAMAN HASIL NILAI -->
+            <div id="resultPage" class="hidden bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in">
+                <div class="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
+                    <div class="relative z-10">
+                        <span id="resultBadge" class="inline-block px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-bold uppercase tracking-wider mb-2">Sangat Baik</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold">Hasil Evaluasi Kuis</h2>
+                        <p class="text-xs text-slate-400 mt-1">Sistem Reproduksi Manusia - MTs Negeri 4 Serang</p>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Cards Grid Nilai & Stat -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <!-- Score Display Box -->
+                        <div class="md:col-span-5 bg-gradient-to-br from-slate-50 to-brand-50/40 p-6 rounded-2xl border border-slate-200 text-center flex flex-col justify-center items-center">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">NILAI AKHIR</span>
+                            <div id="finalScore" class="text-6xl sm:text-7xl font-black text-brand-600 my-2">100</div>
+                            <div id="scorePredicate" class="text-sm font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                                Sangat Baik
+                            </div>
+                            <p id="motivationalMessage" class="text-xs text-slate-600 italic mt-3 px-2">
+                                "Luar biasa! Pemahaman kamu tentang sistem reproduksi manusia sangat matang!"
+                            </p>
+                        </div>
+
+                        <!-- Details Stat Grid -->
+                        <div class="md:col-span-7 grid grid-cols-2 gap-3">
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="text-[11px] font-semibold text-slate-500">Nama Siswa</div>
+                                <div id="resStudentName" class="font-bold text-slate-800 text-sm truncate">-</div>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="text-[11px] font-semibold text-slate-500">Kelas & Level</div>
+                                <div id="resClassLevel" class="font-bold text-slate-800 text-sm truncate">-</div>
+                            </div>
+                            <div class="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-200">
+                                <div class="text-[11px] font-semibold text-emerald-700">Jawaban Benar</div>
+                                <div id="resCorrectCount" class="font-bold text-emerald-800 text-lg">0 Soal</div>
+                            </div>
+                            <div class="bg-rose-50/60 p-3.5 rounded-xl border border-rose-200">
+                                <div class="text-[11px] font-semibold text-rose-700">Jawaban Salah</div>
+                                <div id="resWrongCount" class="font-bold text-rose-800 text-lg">0 Soal</div>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="text-[11px] font-semibold text-slate-500">Akurasi</div>
+                                <div id="resAccuracy" class="font-bold text-slate-800 text-sm">0%</div>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="text-[11px] font-semibold text-slate-500">Waktu Tempuh</div>
+                                <div id="resTimeSpent" class="font-bold text-slate-800 text-sm">00:00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-2.5 pt-4 border-t border-slate-100 justify-center sm:justify-end">
+                        <button onclick="restartQuizSameLevel()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-rotate-right"></i> Ulangi Kuis
+                        </button>
+                        <button onclick="goToHome()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-layer-group"></i> Pilih Level Lain
+                        </button>
+                        <button onclick="printResultCard()" class="px-4 py-2.5 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded-xl text-xs transition border border-brand-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-print"></i> Cetak Hasil
+                        </button>
+                        <button onclick="exportResultPDF()" class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-pdf"></i> Unduh PDF
+                        </button>
+                        <button onclick="exportResultExcel()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl text-xs transition shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> Unduh Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL PORTAL GURU -->
+    <div id="teacherModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white p-4 px-6 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-user-shield text-brand-400 text-lg"></i>
+                    <h3 class="font-bold text-base">Portal Guru - Rekapitulasi Nilai Kuis</h3>
+                </div>
+                <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Lock PIN Screen -->
+            <div id="pinScreen" class="p-8 text-center max-w-md mx-auto space-y-4 my-auto">
+                <div class="w-16 h-16 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto text-2xl border border-brand-100">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-800 text-lg">Masukan PIN Guru</h4>
+                    <p class="text-xs text-slate-500 mt-1">Akses khusus guru untuk rekapitulasi nilai peserta didik. (PIN Default: <code class="bg-slate-100 px-1 py-0.5 rounded text-brand-600">1234</code>)</p>
+                </div>
+                <div class="flex justify-center gap-2">
+                    <input type="password" id="teacherPinInput" maxlength="6" placeholder="****" class="w-40 text-center tracking-widest text-lg px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+                <button onclick="verifyTeacherPin()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm transition">
+                    Verifikasi Masuk
+                </button>
+            </div>
+
+            <!-- Dashboard Rekapitulasi Screen -->
+            <div id="dashboardScreen" class="hidden flex-col flex-grow overflow-hidden p-6 space-y-4">
+                <!-- Toolbar Filter & Search -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div class="sm:col-span-4 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchStudent" oninput="renderTeacherTable()" placeholder="Cari nama siswa..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <select id="filterClass" onchange="renderTeacherTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none bg-white">
+                            <option value="ALL">Semua Kelas</option>
+                            <option value="IX-A">IX - A</option>
+                            <option value="IX-B">IX - B</option>
+                            <option value="IX-C">IX - C</option>
+                            <option value="IX-D">IX - D</option>
+                            <option value="IX-E">IX - E</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <select id="filterLevel" onchange="renderTeacherTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none bg-white">
+                            <option value="ALL">Semua Level</option>
+                            <option value="MUDAH">Level 1 (Mudah)</option>
+                            <option value="SEDANG">Level 2 (Sedang)</option>
+                            <option value="SUKAR">Level 3 (Sukar)</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <select id="sortBy" onchange="renderTeacherTable()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none bg-white">
+                            <option value="NEWEST">Terbaru</option>
+                            <option value="HIGHEST">Nilai Highest</option>
+                            <option value="LOWEST">Nilai Lowest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="flex-grow overflow-auto border border-slate-200 rounded-xl custom-scrollbar">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider sticky top-0">
+                            <tr>
+                                <th class="p-3 text-center border-b">No</th>
+                                <th class="p-3 border-b">Nama Siswa</th>
+                                <th class="p-3 border-b">Kelas</th>
+                                <th class="p-3 border-b">Level</th>
+                                <th class="p-3 text-center border-b">Nilai</th>
+                                <th class="p-3 text-center border-b">B/S</th>
+                                <th class="p-3 border-b">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recapTableBody" class="divide-y divide-slate-100">
+                            <!-- Rows loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Bottom Bar Recap Actions -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <div class="text-xs text-slate-500 font-medium">
+                        Total Rekam Data: <strong id="totalRecordsCount" class="text-slate-800">0</strong> Siswa
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="exportRecapExcel()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> Export Excel Rekap
+                        </button>
+                        <button onclick="clearAllRecapData()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i> Reset Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM NOTIFICATION MODAL ALERTS (REPLACING DEFAULT ALERT) -->
+    <div id="customAlertModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl border border-slate-100 text-center space-y-4 animate-fade-in">
+            <div id="alertIconBox" class="w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i id="alertIcon" class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <div>
+                <h4 id="alertTitle" class="font-bold text-slate-800 text-base">Pemberitahuan</h4>
+                <p id="alertMessage" class="text-xs text-slate-600 mt-1 leading-relaxed">Pesan alert di sini.</p>
+            </div>
+            <button onclick="closeCustomAlert()" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+        <p>Kuis Interaktif IPA - Sistem Reproduksi Manusia &bull; MTs Negeri 4 Serang</p>
+    </footer>
+
+    <!-- LOGIC APPLICATION JAVASCRIPT -->
+    <script>
+        /* ==========================================================================
+           1. DATA BANK SOAL (LEVEL 1, LEVEL 2, LEVEL 3)
+           ========================================================================== */
+        const QUESTION_BANK = {
+            easy: [
+                {
+                    q: "Organ reproduksi pria yang berfungsi menghasilkan sel sperma dan hormon testosteron adalah...",
+                    options: ["Skrotum", "Testis", "Vas Deferens", "Penis"],
+                    answer: 1,
+                    explain: "Testis merupakan organ utama reproduksi pria yang berfungsi memproduksi sperma dan hormon testosteron."
+                },
+                {
+                    q: "Organ reproduksi wanita yang menjadi tempat terjadinya proses fertilisasi (pembuahan) adalah...",
+                    options: ["Ovarium", "Uterus (Rahim)", "Tuba Fallopi (Saluran Telur)", "Vagina"],
+                    answer: 2,
+                    explain: "Fertilisasi atau peleburan sel sperma dan ovum secara alami terjadi di dalam saluran telur (Tuba Fallopi)."
+                },
+                {
+                    q: "Kantung kulit yang berfungsi menjaga dan mengatur suhu testis agar sesuai untuk produksi sperma dinamakan...",
+                    options: ["Epididimis", "Skrotum", "Uretra", "Vesikula Seminalis"],
+                    answer: 1,
+                    explain: "Skrotum membungkus testis dan menjaga suhunya sedikit lebih rendah dari suhu tubuh normal."
+                },
+                {
+                    q: "Peristiwa peluruhan dinding rahim yang disertai pendarahan secara periodik pada wanita disebut...",
+                    options: ["Fertilisasi", "Ovulasi", "Menstruasi", "Menopause"],
+                    answer: 2,
+                    explain: "Menstruasi terjadi ketika sel telur tidak dibuahi, sehingga lapisan endometrium rahim meluruh."
+                },
+                {
+                    q: "Salah satu tanda pubertas sekunder yang dialami oleh remaja laki-laki adalah...",
+                    options: ["Pinggul membesar", "Suara menjadi lebih berat/membesar", "Mengalami haid pertama", "Payudara membesar"],
+                    answer: 1,
+                    explain: "Perubahan suara menjadi lebih berat pada remaja pria dipengaruhi oleh peningkatan hormon testosteron saat pubertas."
+                },
+                {
+                    q: "Organ reproduksi wanita yang berfungsi sebagai tempat tumbuh dan berkembangnya janin selama kehamilan adalah...",
+                    options: ["Ovarium", "Uterus (Rahim)", "Serviks", "Vagina"],
+                    answer: 1,
+                    explain: "Uterus atau rahim memiliki dinding otot tebal yang siap menampung serta membesarkan embrio hingga menjadi janin."
+                },
+                {
+                    q: "Proses pelepasan sel telur (ovum) yang telah matang dari ovarium dinamakan...",
+                    options: ["Oogenesis", "Ovulasi", "Implantasi", "Ejakulasi"],
+                    answer: 1,
+                    explain: "Ovulasi adalah peristiwa keluarnya oosit sekunder/ovum matang dari ovarium menuju tuba fallopi."
+                },
+                {
+                    q: "Upaya yang benar dalam menjaga kebersihan dan kesehatan organ reproduksi adalah...",
+                    options: [
+                        "Mengganti pakaian dalam minimal 2 kali sehari dan menggunakan bahan menyerap keringat",
+                        "Menggunakan celana yang sangat ketat setiap hari",
+                        "Membiarkan organ reproduksi dalam keadaan lembap",
+                        "Jarang mengganti pembalut saat menstruasi"
+                    ],
+                    answer: 0,
+                    explain: "Mengganti pakaian dalam secara teratur menjaga area reproduksi tetap kering dan terhindar dari jamur atau bakteri."
+                },
+                {
+                    q: "Hormon utama yang memicu perkembangan ciri-ciri kelamin sekunder pada anak perempuan adalah...",
+                    options: ["Testosteron", "Estrogen dan Progesteron", "Insulin", "Adrenalin"],
+                    answer: 1,
+                    explain: "Hormon estrogen dan progesteron diproduksi ovarium untuk mengatur siklus kewanitaan dan ciri kelamin sekunder."
+                },
+                {
+                    q: "Saluran yang berfungsi menyalurkan sperma dari epididimis menuju vasikula seminalis adalah...",
+                    options: ["Vas Deferens", "Uretra", "Tubulus Seminiferus", "Ureter"],
+                    answer: 0,
+                    explain: "Vas deferens adalah saluran panjang penghubung tempat penyimpanan sperma (epididimis) menuju kantung sperma."
+                }
+            ],
+            medium: [
+                {
+                    q: "Proses pembentukan sel sperma di dalam testis dinamakan spermatogenesis. Spermatogenesis terjadi secara spesifik di bagian...",
+                    options: ["Vas Deferens", "Tubulus Seminiferus", "Epididimis", "Kelenjar Prostat"],
+                    answer: 1,
+                    explain: "Tubulus seminiferus merupakan saluran halus berbelit-belit di dalam testis tempat pembentukan sperma."
+                },
+                {
+                    q: "Pada proses oogenesis, satu sel induk telur (oogonium) pada akhirnya akan menghasilkan...",
+                    options: ["4 sel ovum fungsional", "1 sel ovum fungsional dan 3 badan polar (polosit)", "2 sel ovum fungsional dan 2 badan polar", "4 badan polar"],
+                    answer: 1,
+                    explain: "Hasil akhir oogenesis adalah 1 sel telur (ovum) fungsional yang kaya nutrisi dan 3 badan polar yang mengalami degenerasi."
+                },
+                {
+                    q: "Hormon yang dihasilkan oleh hipofisis anterior yang berfungsi memicu pematangan folikel di dalam ovarium adalah...",
+                    options: ["FSH (Follicle Stimulating Hormone)", "LH (Luteinizing Hormone)", "Estrogen", "Progesteron"],
+                    answer: 0,
+                    explain: "FSH merangsang pertumbuhan dan pematangan folikel dalam ovarium pada fase pra-ovulasi."
+                },
+                {
+                    q: "Lonjakan (surge) hormon apakah yang memicu terjadinya peristiwa ovulasi pada siklus menstruasi?",
+                    options: ["FSH", "LH (Luteinizing Hormone)", "Progesteron", "Prolaktin"],
+                    answer: 1,
+                    explain: "Peningkatan mendadak hormon LH merangsang pelepasan oosit sekunder dari folikel matang (ovulasi)."
+                },
+                {
+                    q: "Proses melekatnya zigot/embrio pada dinding endometrium rahim disebut...",
+                    options: ["Fertilisasi", "Ovulasi", "Implantasi", "Gastrulasi"],
+                    answer: 2,
+                    explain: "Implantasi adalah tertanamnya blastosit (embrio) ke dalam lapisan endometrium uterus."
+                },
+                {
+                    q: "Kelenjar reproduksi pria yang menghasilkan cairan bersifat basa dan kaya nutrisi fructose untuk energi sperma adalah...",
+                    options: ["Kelenjar Cowper (Bulbouretra)", "Vesikula Seminalis", "Kelenjar Prostat", "Testis"],
+                    answer: 1,
+                    explain: "Vesikula seminalis menyumbang cairan terbanyak pada semen yang mengandung fruktosa sebagai sumber energi sperma."
+                },
+                {
+                    q: "Membran kehamilan yang berfungsi membentuk tali pusat dan membawa pembuluh darah antara embrio dan plasenta adalah...",
+                    options: ["Amnion", "Alantois", "Korion", "Sakus Vitelinus"],
+                    answer: 1,
+                    explain: "Alantois berperan dalam pembentukan pembuluh darah pada tali pusat yang menghubungkan janin dengan plasenta."
+                },
+                {
+                    q: "Cairan ketuban (amnion) memiliki fungsi utama bagi janin di dalam rahim, yaitu...",
+                    options: ["Memberi asupan makanan utama janin", "Protect janin dari benturan fisik dan menjaga suhu tubuh janin", "Menghasilkan sel darah merah untuk janin", "Menyalurkan sisa metabolisme janin ke ibu"],
+                    answer: 1,
+                    explain: "Cairan amnion berfungsi sebagai bantalan penahan guncangan fisik dan menjaga kestabilan suhu lingkungan janin."
+                },
+                {
+                    q: "Tempat penyimpanan sementara sel sperma hingga matang dan memiliki kemampuan bergerak (motilitas) adalah...",
+                    options: ["Vas Deferens", "Epididimis", "Testis", "Uretra"],
+                    answer: 1,
+                    explain: "Sperma matang dan disimpan sementara di epididimis sebelum disalurkan keluar."
+                },
+                {
+                    q: "Fase pada siklus menstruasi di mana dinding rahim menebal kembali dipengaruhi oleh peningkatkan hormon estrogen dinamakan...",
+                    options: ["Fase Menstruasi", "Fase Pra-Ovulasi (Folikuler)", "Fase Pasca-Ovulasi (Luteal)", "Fase Menopause"],
+                    answer: 1,
+                    explain: "Fase pra-ovulasi ditandai dengan pembentukan folikel di ovarium dan penebalan kembali endometrium oleh estrogen."
+                },
+                {
+                    q: "Jumlah kromosom pada sel sperma atau sel telur manusia adalah...",
+                    options: ["46 buah (diploid)", "23 buah (haploid)", "23 pasang (diploid)", "92 buah (tetraploid)"],
+                    answer: 1,
+                    explain: "Sel gamet (sperma & ovum) bersifat haploid (n = 23 kromosom) sehingga saat pembuahan terbentuk zigot diploid (2n = 46)."
+                },
+                {
+                    q: "Hormon yang terdeteksi pada alat tes kehamilan (pack test) karena diproduksi oleh plasenta muda adalah...",
+                    options: ["hCG (Human Chorionic Gonadotropin)", "Estrogen", "Progesteron", "Oxitosin"],
+                    answer: 0,
+                    explain: "HCG menjaga korpus luteum tetap memproduksi progesteron dan terdeteksi pada urine ibu hamil."
+                },
+                {
+                    q: "Bila ovum dibuahi oleh sperma yang membawa kromosom Y, maka jenis kelamin bayi yang terbentuk adalah...",
+                    options: ["Perempuan (XX)", "Laki-laki (XY)", "Kembar identik", "Kelamin ganda"],
+                    answer: 1,
+                    explain: "Sel telur selalu membawa kromosom X. Jika dibuahi sperma pembawa kromosom Y, dihasilkan zigot XY (laki-laki)."
+                },
+                {
+                    q: "Organ tempat terjadinya pembentukan membran plasenta penghubung nutrisi ibu dan janin adalah...",
+                    options: ["Uterus", "Ovarium", "Serviks", "Vagina"],
+                    answer: 0,
+                    explain: "Plasenta tumbuh dan berkembang pada dinding uterus (rahim) tempat embrio berimplantasi."
+                },
+                {
+                    q: "Fungsi dari kelenjar Cowper (Bulbouretra) pada organ reproduksi pria adalah...",
+                    options: ["Menghasilkan sperma", "Menghasilkan cairan netral pembersih asam uretra sebelum ejakulasi", "Menyimpan sperma matang", "Mendorong sperma saat ejakulasi"],
+                    answer: 1,
+                    explain: "Kelenjar Cowper menghasilkan cairan mukus yang menetralkan keasaman uretra dari sisa urine."
+                }
+            ],
+            hard: [
+                {
+                    q: "Seorang wanita memiliki siklus menstruasi teratur 28 hari. Jika hari pertama menstruasi terakhirnya adalah tanggal 1 Maret, maka perkiraan waktu terjadinya ovulasi adalah...",
+                    options: ["14 Maret", "7 Maret", "21 Maret", "28 Maret"],
+                    answer: 0,
+                    explain: "Ovulasi secara umum terjadi pertengahan siklus, yaitu hari ke-14 dari hari pertama menstruasi (1 + 14 = 14 Maret)."
+                },
+                {
+                    q: "Seseorang mengalami gejala demam, pembengkakan kelenjar getah bening, serta penurunan sistem kekebalan tubuh secara drastis setelah terinfeksi virus HIV. Penyakit ini dinamakan...",
+                    options: ["Sifilis", "Gonore", "AIDS", "Epididimitis"],
+                    answer: 2,
+                    explain: "AIDS (Acquired Immunodeficiency Syndrome) disebabkan oleh infeksi virus HIV yang menyerang sel darah putih (limfosit T)."
+                },
+                {
+                    q: "Analisis Hormon: Jika kadar hormon progesteron pada seorang wanita tetap tinggi di akhir siklus menstruasi (hari ke-25 hingga ke-28), hal ini mengindikasikan bahwa...",
+                    options: [
+                        "Wanita tersebut akan segera mengalami menstruasi",
+                        "Telah terjadi fertilisasi dan embrio berimplantasi di rahim",
+                        "Terjadi kerusakan pada korpus luteum",
+                        "Ovarium gagal memproduksi ovum"
+                    ],
+                    answer: 1,
+                    explain: "Kadar progesteron dijaga tetap tinggi oleh hCG bila terjadi kehamilan agar dinding rahim tidak meluruh."
+                },
+                {
+                    q: "Kondisi medis penyumbatan pada kedua Tuba Fallopi seorang wanita akan mengakibatkan...",
+                    options: [
+                        "Wanita tidak dapat memproduksi sel telur",
+                        "Wanita tidak dapat mengalami ovulasi",
+                        "Sperma tidak dapat bertemu ovum sehingga terjadi infertilitas alami",
+                        "Hormon estrogen berhenti diproduksi"
+                    ],
+                    answer: 2,
+                    explain: "Tuba fallopi adalah tempat fertilisasi. Penyumbatan menghalangi sperma bertemu dengan ovum."
+                },
+                {
+                    q: "Penyakit Gonore (kencing nanah) disebabkan oleh infeksi bakteri...",
+                    options: ["Treponema pallidum", "Neisseria gonorrhoeae", "Chlamydia trachomatis", "Candida albicans"],
+                    answer: 1,
+                    explain: "Neisseria gonorrhoeae adalah bakteri penyebab infeksi saluran reproduksi Gonore."
+                },
+                {
+                    q: "Perhatikan urutan saluran reproduksi pria berikut: Testis -> (1) -> Vas Deferens -> (2) -> Uretra. Organ nomor (1) dan (2) yang tepat adalah...",
+                    options: [
+                        "(1) Skrotum, (2) Epididimis",
+                        "(1) Epididimis, (2) Saluran Ejakulasi (Vesikula Seminalis)",
+                        "(1) Kelenjar Prostat, (2) Epididimis",
+                        "(1) Ureter, (2) Penis"
+                    ],
+                    answer: 1,
+                    explain: "Rute sperma: Testis -> Epididimis -> Vas Deferens -> Saluran Ejakulasi -> Uretra."
+                },
+                {
+                    q: "Pada peristiwa pembelahan meiosis dalam spermatogenesis, pembelahan meiosis I mengubah spermatosit primer menjadi...",
+                    options: ["Spermatogonium", "Spermatosit Sekunder (haploid)", "Spermatid", "Spermatozoa"],
+                    answer: 1,
+                    explain: "Meiosis I membagi kromosom diploid (2n) spermatosit primer menjadi 2 spermatosit sekunder haploid (n)."
+                },
+                {
+                    q: "Apakah dampak biologis dari tindakan pemotongan/pengikatan saluran vas deferens pada pria (Vasektomi)?",
+                    options: [
+                        "Pria tidak lagi dapat memproduksi hormon testosteron",
+                        "Pria tidak lagi dapat mengalami ereksi",
+                        "Semen yang diereksikan tidak mengandung sel sperma",
+                        "Testis berhenti memproduksi cairan semen"
+                    ],
+                    answer: 2,
+                    explain: "Vasektomi menghalangi sperma dari testis menuju semen. Ejakulasi tetap berisi cairan kelenjar tetapi tanpa sperma."
+                },
+                {
+                    q: "Bakteri Treponema pallidum dapat menyebabkan penyakit reproduksi berbahaya dengan gejala luka pada organ kelamin yang meluas ke organ vital tubuh. Penyakit ini dinamakan...",
+                    options: ["Sifilis (Raja Singa)", "Herpes Genitalis", "Keputihan", "Orkitis"],
+                    answer: 0,
+                    explain: "Sifilis atau raja singa disebabkan oleh spiroketa Treponema pallidum."
+                },
+                {
+                    q: "Hormon oksitosin memiliki peranan kunci pada akhir masa kehamilan (proses persalinan), yaitu...",
+                    options: [
+                        "Merangsang kontraksi otot polos dinding rahim (uterus)",
+                        "Mencegah terjadinya ovulasi",
+                        "Mempertebal dinding endometrium",
+                        "Menurunkan kadar gula darah janin"
+                    ],
+                    answer: 0,
+                    explain: "Oksitosin merangsang kontraksi otot rahim untuk mendorong janin keluar saat proses melahirkan."
+                },
+                {
+                    q: "Seorang pasien remaja wanita mengalami gatal hebat, rasa terbakar, dan keluar cairan putih kental seperti susu dari vaginanya. Diagnosis sementara penyakit tersebut adalah...",
+                    options: ["Kandidiasis / Keputihan akibat jamur Candida albicans", "Sifilis", "Gonore", "AIDS"],
+                    answer: 0,
+                    explain: "Infeksi jamur Candida albicans menyebabkan keputihan abnormal berbusa/kental dan gatal."
+                },
+                {
+                    q: "Mengapa pembelahan meiosis sangat penting pada pembentukan sel gamet reproduksi manusia?",
+                    options: [
+                        "Untuk menggandakan jumlah kromosom menjadi 92",
+                        "Menjaga agar jumlah kromosom keturunan tetap 46 (diploid) setelah pembuahan",
+                        "Mencegah pertumbuhan embrio",
+                        "Mempercepat proses pembelahan mitotik"
+                    ],
+                    answer: 1,
+                    explain: "Meiosis mereduksi kromosom menjadi haploid (23), sehingga gabungan ayah (23) & ibu (23) menghasilkan anak (46)."
+                },
+                {
+                    q: "Pasangan suami istri yang belum memiliki keturunan melakukan uji medis. Hasil pemeriksaan menunjukkan sel sperma suami tidak memiliki akrosom. Akibat biologis kondisi ini adalah...",
+                    options: [
+                        "Sperma tidak dapat bergerak memutar",
+                        "Sperma tidak dapat menembus lapisan pelindung sel telur (zona pelusida)",
+                        "Sperma tidak mengandung kromosom",
+                        "Sperma mati di dalam testis"
+                    ],
+                    answer: 1,
+                    explain: "Akrosom mengandung enzim hidrolitik (hialuronidase) untuk mencerna/menembus zona pelusida sel telur."
+                },
+                {
+                    q: "Bayi kembar fraternal (dizigotik) terjadi karena proses...",
+                    options: [
+                        "Satu ovum dibuahi oleh dua sel sperma bersamaan",
+                        "Dua ovum matang dibuahi oleh dua sel sperma yang berbeda",
+                        "Satu zigot membelah menjadi dua embrio terpisah",
+                        "Ovum membelah sebelum pembuahan"
+                    ],
+                    answer: 1,
+                    explain: "Kembar fraternal berasal dari 2 ovum berbeda yang dibuahi oleh 2 sperma berbeda secara bersamaan."
+                },
+                {
+                    q: "Fungsi hormon Prolaktin yang diproduksi kelenjar hipofisis pasca melahirkan adalah...",
+                    options: [
+                        "Merangsang produksi dan sekresi air susu ibu (ASI)",
+                        "Memicu terjadinya menstruasi baru",
+                        "Meningkatkan kadar estrogen",
+                        "Merangsang kontraksi rahim"
+                    ],
+                    answer: 0,
+                    explain: "Hormon prolaktin merangsang kelenjar payudara untuk memproduksi ASI bagi bayi."
+                },
+                {
+                    q: "Upaya pencegahan penularan HIV/AIDS yang paling efektif dan tepat bagi kalangan remaja sesuai norma keagamaan dan kesehatan adalah...",
+                    options: [
+                        "Mengonsumsi vitamin C setiap hari",
+                        "Menghindari kontak sosial biasa dengan penderita HIV",
+                        "Menjaga pergaulan bebas, tidak melakukan hubungan seksual di luar nikah, dan menghindari narkoba suntik",
+                        "Melakukan vaksinasi HIV secara berkala"
+                    ],
+                    answer: 2,
+                    explain: "Prinsip pencegahan HIV mencakup keimanan, tidak berganti pasangan/seks bebas, serta menjauhi penggunaan jarum suntik."
+                },
+                {
+                    q: "Apabila kadar hormon estrogen dan progesteron menurun drastis di akhir siklus menstruasi, respons organ rahim adalah...",
+                    options: [
+                        "Terjadi penebalan endometrium",
+                        "Terjadi peluruhan lapisan endometrium (menstruasi)",
+                        "Uterus membesar",
+                        "Serviks menutup rapat"
+                    ],
+                    answer: 1,
+                    explain: "Penurunan progesteron memicu hilangnya dukungan nutrisi pada endometrium sehingga luruh sebagai menstruasi."
+                },
+                {
+                    q: "Alasan kesehatan mengapa laki-laki dianjurkan untuk menjalani khitan (sirkumsisi) adalah...",
+                    options: [
+                        "Mempercepat spermatogenesis",
+                        "Memotong prepusium penis untuk mencegah penumpukan kotoran (smegma) dan infeksi bakteri",
+                        "Meningkatkan produksi hormon testosteron",
+                        "Menghentikan pembentukan urine"
+                    ],
+                    answer: 1,
+                    explain: "Khitan membuang kulup (prepusium) yang sering menjadi sarang kotoran dan mikroorganisme penyebab infeksi."
+                },
+                {
+                    q: "Studi Kasus: Seorang wanita mengalami nyeri hebat di perut bawah, demam, dan keputihan tidak normal. Dokter mendiagnosis terjadi peradangan pada saluran telur akibat infeksi bakteri penyebar dari vagina. Kondisi ini dikenal sebagai...",
+                    options: [
+                        "Penyakit Menular Seksual / Pelvic Inflammatory Disease (Salpingitis)",
+                        "Prostatitis",
+                        "Orkitis",
+                        "Kanker Serviks"
+                    ],
+                    answer: 0,
+                    explain: "Salpingitis / PID adalah radang saluran telur akibat penyebaran infeksi bakteri dari organ kewanitaan bawah."
+                },
+                {
+                    q: "Selama kehamilan, pertukaran gas O2 dan CO2 serta nutrisi antara darah ibu dan darah janin terjadi melalui pembuluh darah di...",
+                    options: ["Plasenta (Tali Pusat)", "Cairan Amnion", "Dinding Vagina", "Tuba Fallopi"],
+                    answer: 0,
+                    explain: "Plasenta menghubungkan sirkulasi darah ibu dan janin tanpa percampuran darah langsung untuk pertukaran gizi & gas."
+                }
+            ]
+        };
+
+        /* ==========================================================================
+           2. STATE & VARIABLE APLIKASI
+           ========================================================================== */
+        let state = {
+            studentName: '',
+            studentClass: '',
+            selectedLevel: 'easy', // 'easy', 'medium', 'hard'
+            questions: [],
+            currentIndex: 0,
+            userAnswers: [], // Array of option index chosen
+            timerSeconds: 0,
+            timerInterval: null,
+            soundEnabled: true,
+            quizStartTime: null,
+            quizEndTime: null
+        };
+
+        const LOCAL_STORAGE_KEY = 'mtsn4serang_quiz_recap_v1';
+
+        /* ==========================================================================
+           3. AUDIO SYNTHESIZER (WEB AUDIO API) - TANPA ASSET EXTERNAL
+           ========================================================================== */
+        function playSoundEffect(type) {
+            if (!state.soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.15); // E5
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130.81, ctx.currentTime + 0.2); // C3
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.05);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (state.soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-lg text-brand-600';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-lg text-rose-500';
+            }
+        }
+
+        /* ==========================================================================
+           4. FLOW CONTROL & NAVIGATION
+           ========================================================================== */
+        window.onload = function() {
+            selectLevel('easy');
+        };
+
+        function selectLevel(lvl) {
+            playSoundEffect('click');
+            state.selectedLevel = lvl;
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.classList.remove('border-brand-600', 'bg-brand-50/50', 'ring-2', 'ring-brand-500');
+            });
+            let target;
+            if (lvl === 'easy') target = document.getElementById('btnLevelEasy');
+            if (lvl === 'medium') target = document.getElementById('btnLevelMedium');
+            if (lvl === 'hard') target = document.getElementById('btnLevelHard');
+            if (target) {
+                target.classList.add('border-brand-600', 'bg-brand-50/50', 'ring-2', 'ring-brand-500');
+            }
+        }
+
+        function showAlert(title, msg, type = 'info') {
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = msg;
+            const box = document.getElementById('alertIconBox');
+            const icon = document.getElementById('alertIcon');
+            
+            if (type === 'warning') {
+                box.className = "w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl bg-amber-100 text-amber-600";
+                icon.className = "fa-solid fa-triangle-exclamation";
+            } else {
+                box.className = "w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl bg-brand-100 text-brand-600";
+                icon.className = "fa-solid fa-circle-info";
+            }
+            document.getElementById('customAlertModal').classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        }
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startQuiz() {
+            playSoundEffect('click');
+            const nameInput = document.getElementById('studentName').value.trim();
+            const classInput = document.getElementById('studentClass').value;
+
+            if (!nameInput) {
+                showAlert("Peringatan", "Mohon isi Nama Lengkap terlebih dahulu!", "warning");
+                return;
+            }
+            if (!classInput) {
+                showAlert("Peringatan", "Mohon pilih Kelas terlebih dahulu!", "warning");
+                return;
+            }
+
+            state.studentName = nameInput;
+            state.studentClass = classInput;
+
+            // Load and shuffle questions
+            const rawQuestions = QUESTION_BANK[state.selectedLevel] || QUESTION_BANK.easy;
+            const prepared = rawQuestions.map(qObj => {
+                // Shuffle options while keeping track of correct answer index
+                const indexedOpts = qObj.options.map((opt, idx) => ({ text: opt, isCorrect: idx === qObj.answer }));
+                const shuffledOpts = shuffleArray(indexedOpts);
+                const newCorrectIndex = shuffledOpts.findIndex(o => o.isCorrect);
+                return {
+                    q: qObj.q,
+                    options: shuffledOpts.map(o => o.text),
+                    answer: newCorrectIndex,
+                    explain: qObj.explain
+                };
+            });
+
+            state.questions = shuffleArray(prepared);
+            state.currentIndex = 0;
+            state.userAnswers = new Array(state.questions.length).fill(null);
+            state.timerSeconds = 0;
+            state.quizStartTime = new Date();
+
+            // UI Update
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('quizPage').classList.remove('hidden');
+
+            document.getElementById('quizStudentInfo').innerText = `${state.studentName} - ${state.studentClass}`;
+            
+            const badge = document.getElementById('quizBadgeLevel');
+            if (state.selectedLevel === 'easy') {
+                badge.innerText = "Level 1 (Mudah)";
+                badge.className = "px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white";
+            } else if (state.selectedLevel === 'medium') {
+                badge.innerText = "Level 2 (Sedang)";
+                badge.className = "px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-amber-500 text-white";
+            } else {
+                badge.innerText = "Level 3 (Sukar)";
+                badge.className = "px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-rose-500 text-white";
+            }
+
+            document.getElementById('totalQuestionsNum').innerText = state.questions.length;
+
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                state.timerSeconds++;
+                const mins = Math.floor(state.timerSeconds / 60).toString().padStart(2, '0');
+                const secs = (state.timerSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('quizTimer').innerText = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const currentQ = state.questions[state.currentIndex];
+            document.getElementById('currentQuestionNum').innerText = state.currentIndex + 1;
+            document.getElementById('questionText').innerText = currentQ.q;
+
+            // Progress Bar
+            const progress = ((state.currentIndex + 1) / state.questions.length) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progress}%`;
+
+            // Answered tracker
+            const answeredNum = state.userAnswers.filter(a => a !== null).length;
+            document.getElementById('answeredCount').innerText = answeredNum;
+
+            // Options Container
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            const chosen = state.userAnswers[state.currentIndex];
+
+            currentQ.options.forEach((optText, optIdx) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = "w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between group cursor-pointer text-xs sm:text-sm font-medium ";
+                
+                if (chosen === null) {
+                    optBtn.className += "border-slate-200 hover:border-brand-500 hover:bg-brand-50/30 text-slate-700 bg-white";
+                } else {
+                    if (optIdx === chosen) {
+                        if (chosen === currentQ.answer) {
+                            optBtn.className += "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
+                        } else {
+                            optBtn.className += "border-rose-500 bg-rose-50 text-rose-900 font-bold";
+                        }
+                    } else if (optIdx === currentQ.answer) {
+                        optBtn.className += "border-emerald-500 bg-emerald-50/50 text-emerald-900";
+                    } else {
+                        optBtn.className += "border-slate-200 opacity-60 text-slate-500 bg-slate-50";
+                    }
+                }
+
+                const prefix = String.fromCharCode(65 + optIdx); // A, B, C, D
+                optBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-lg bg-slate-100 group-hover:bg-brand-500 group-hover:text-white flex items-center justify-center font-bold text-xs text-slate-600 transition-colors">${prefix}</span>
+                        <span>${optText}</span>
+                    </div>
+                    ${chosen !== null && optIdx === currentQ.answer ? '<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i>' : ''}
+                    ${chosen !== null && optIdx === chosen && chosen !== currentQ.answer ? '<i class="fa-solid fa-circle-xmark text-rose-600 text-lg"></i>' : ''}
+                `;
+
+                optBtn.onclick = () => selectOption(optIdx);
+                container.appendChild(optBtn);
+            });
+
+            // Feedback Box
+            const feedbackBox = document.getElementById('feedbackBox');
+            if (chosen !== null) {
+                feedbackBox.classList.remove('hidden');
+                if (chosen === currentQ.answer) {
+                    feedbackBox.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 animate-fade-in";
+                    document.getElementById('feedbackIcon').innerHTML = '<i class="fa-solid fa-face-smile text-emerald-600 text-2xl"></i>';
+                    document.getElementById('feedbackTitle').innerText = "Hebat! Jawaban kamu benar. Pertahankan!";
+                } else {
+                    feedbackBox.className = "p-4 rounded-xl border bg-rose-50 border-rose-200 text-rose-900 animate-fade-in";
+                    document.getElementById('feedbackIcon').innerHTML = '<i class="fa-solid fa-lightbulb text-rose-600 text-2xl"></i>';
+                    document.getElementById('feedbackTitle').innerText = "Tetap semangat! Ayo pelajari kembali materi ini.";
+                }
+                document.getElementById('feedbackExplanation').innerHTML = `<strong>Pembahasan:</strong> ${currentQ.explain}`;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Buttons state
+            document.getElementById('prevBtn').style.visibility = state.currentIndex === 0 ? 'hidden' : 'visible';
+            
+            if (state.currentIndex === state.questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+            }
+        }
+
+        function selectOption(optIdx) {
+            if (state.userAnswers[state.currentIndex] !== null) return; // Answer locked once selected
+            
+            state.userAnswers[state.currentIndex] = optIdx;
+            const currentQ = state.questions[state.currentIndex];
+            
+            if (optIdx === currentQ.answer) {
+                playSoundEffect('correct');
+            } else {
+                playSoundEffect('wrong');
+            }
+
+            renderQuestion();
+        }
+
+        function navigateQuestion(direction) {
+            playSoundEffect('click');
+            const newIdx = state.currentIndex + direction;
+            if (newIdx >= 0 && newIdx < state.questions.length) {
+                state.currentIndex = newIdx;
+                renderQuestion();
+            }
+        }
+
+        function confirmExitQuiz() {
+            if (confirm("Apakah Anda yakin ingin keluar dari kuis? Seluruh kemajuan saat ini akan hilang.")) {
+                clearInterval(state.timerInterval);
+                goToHome();
+            }
+        }
+
+        function goToHome() {
+            playSoundEffect('click');
+            document.getElementById('quizPage').classList.add('hidden');
+            document.getElementById('resultPage').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+        }
+
+        /* ==========================================================================
+           5. HASIL & EVALUASI
+           ========================================================================== */
+        function finishQuiz() {
+            playSoundEffect('click');
+            // Ensure all answered check
+            const unAnswered = state.userAnswers.findIndex(a => a === null);
+            if (unAnswered !== -1) {
+                showAlert("Peringatan", `Masih ada soal yang belum dijawab (Soal No. ${unAnswered + 1}). Mohon selesaikan semua soal!`, "warning");
+                state.currentIndex = unAnswered;
+                renderQuestion();
+                return;
+            }
+
+            clearInterval(state.timerInterval);
+            state.quizEndTime = new Date();
+
+            // Calculate Score
+            let correctCount = 0;
+            state.questions.forEach((q, idx) => {
+                if (state.userAnswers[idx] === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const total = state.questions.length;
+            const wrongCount = total - correctCount;
+            const finalScoreVal = Math.round((correctCount / total) * 100);
+            const accuracyVal = Math.round((correctCount / total) * 100);
+
+            // Predicate & Message
+            let predicateText = "";
+            let badgeClass = "";
+            let motivation = "";
+
+            if (finalScoreVal >= 90) {
+                predicateText = "Sangat Baik";
+                badgeClass = "inline-block px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-bold uppercase tracking-wider mb-2";
+                motivation = "Luar biasa! Kamu telah menguasai materi Sistem Reproduksi Manusia dengan sangat matang. Pertahankan prestasimu!";
+            } else if (finalScoreVal >= 80) {
+                predicateText = "Baik";
+                badgeClass = "inline-block px-3 py-1 bg-brand-500/20 border border-brand-500/30 text-brand-400 rounded-full text-xs font-bold uppercase tracking-wider mb-2";
+                motivation = "Bagus sekali! Pemahamanmu sudah baik. Pelajari sedikit lagi pada bagian detail untuk meraih nilai sempurna.";
+            } else if (finalScoreVal >= 70) {
+                predicateText = "Cukup";
+                badgeClass = "inline-block px-3 py-1 bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-full text-xs font-bold uppercase tracking-wider mb-2";
+                motivation = "Cukup baik. Jangan cepat puas, ulas kembali materi hormon dan proses reproduksi agar nilaimu lebih optimal.";
+            } else {
+                predicateText = "Perlu Bimbingan";
+                badgeClass = "inline-block px-3 py-1 bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-full text-xs font-bold uppercase tracking-wider mb-2";
+                motivation = "Tetap semangat! Jangan berkecil hati. Pelajari kembali ringkasan materi dan ulangi kuis ini untuk mengasah pemahamanmu.";
+            }
+
+            // Render Results UI
+            document.getElementById('finalScore').innerText = finalScoreVal;
+            document.getElementById('scorePredicate').innerText = predicateText;
+            document.getElementById('resultBadge').innerText = predicateText;
+            document.getElementById('resultBadge').className = badgeClass;
+            document.getElementById('motivationalMessage').innerText = `"${motivation}"`;
+
+            document.getElementById('resStudentName').innerText = state.studentName;
+            
+            let lvlLabel = state.selectedLevel === 'easy' ? 'Level 1 (Mudah)' : (state.selectedLevel === 'medium' ? 'Level 2 (Sedang)' : 'Level 3 (Sukar)');
+            document.getElementById('resClassLevel').innerText = `${state.studentClass} | ${lvlLabel}`;
+            document.getElementById('resCorrectCount').innerText = `${correctCount} / ${total}`;
+            document.getElementById('resWrongCount').innerText = `${wrongCount} Soal`;
+            document.getElementById('resAccuracy').innerText = `${accuracyVal}%`;
+
+            const mins = Math.floor(state.timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (state.timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('resTimeSpent').innerText = `${mins}:${secs}`;
+
+            // Save to LocalStorage
+            saveRecapData({
+                id: Date.now(),
+                name: state.studentName,
+                class: state.studentClass,
+                level: lvlLabel,
+                score: finalScoreVal,
+                correct: correctCount,
+                wrong: wrongCount,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            });
+
+            // Switch Screen
+            document.getElementById('quizPage').classList.add('hidden');
+            document.getElementById('resultPage').classList.remove('hidden');
+        }
+
+        function restartQuizSameLevel() {
+            startQuiz();
+        }
+
+        /* ==========================================================================
+           6. LOCALSTORAGE & REKAPITULASI GURU
+           ========================================================================== */
+        function getRecapData() {
+            try {
+                const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveRecapData(record) {
+            const list = getRecapData();
+            list.unshift(record); // Add newest first
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(list));
+        }
+
+        function openTeacherModal() {
+            playSoundEffect('click');
+            document.getElementById('teacherModal').classList.remove('hidden');
+            document.getElementById('pinScreen').classList.remove('hidden');
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('teacherPinInput').value = '';
+        }
+
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').classList.add('hidden');
+        }
+
+        function verifyTeacherPin() {
+            const pin = document.getElementById('teacherPinInput').value.trim();
+            if (pin === '1234') {
+                playSoundEffect('correct');
+                document.getElementById('pinScreen').classList.add('hidden');
+                document.getElementById('dashboardScreen').classList.remove('hidden');
+                document.getElementById('dashboardScreen').classList.add('flex');
+                renderTeacherTable();
+            } else {
+                playSoundEffect('wrong');
+                showAlert("Akses Ditolak", "PIN yang Anda masukkan salah! (Default PIN: 1234)", "warning");
+            }
+        }
+
+        function renderTeacherTable() {
+            let list = getRecapData();
+            const search = document.getElementById('searchStudent').value.toLowerCase();
+            const filterClass = document.getElementById('filterClass').value;
+            const filterLevel = document.getElementById('filterLevel').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            // Search filter
+            if (search) {
+                list = list.filter(item => item.name.toLowerCase().includes(search));
+            }
+            // Class filter
+            if (filterClass !== 'ALL') {
+                list = list.filter(item => item.class === filterClass);
+            }
+            // Level filter
+            if (filterLevel !== 'ALL') {
+                list = list.filter(item => item.level.toUpperCase().includes(filterLevel));
+            }
+
+            // Sorting
+            if (sortBy === 'HIGHEST') {
+                list.sort((a, b) => b.score - a.score);
+            } else if (sortBy === 'LOWEST') {
+                list.sort((a, b) => a.score - b.score);
+            } else {
+                list.sort((a, b) => b.id - a.id); // Newest
+            }
+
+            document.getElementById('totalRecordsCount').innerText = list.length;
+
+            const tbody = document.getElementById('recapTableBody');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Belum ada data rekapitulasi kuis.</td></tr>`;
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                
+                let scoreBadgeClass = "bg-emerald-100 text-emerald-800 font-bold";
+                if (item.score < 70) scoreBadgeClass = "bg-rose-100 text-rose-800 font-bold";
+                else if (item.score < 80) scoreBadgeClass = "bg-amber-100 text-amber-800 font-bold";
+
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium">${index + 1}</td>
+                    <td class="p-3 font-semibold text-slate-800">${item.name}</td>
+                    <td class="p-3">${item.class}</td>
+                    <td class="p-3"><span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 font-medium">${item.level}</span></td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-xs ${scoreBadgeClass}">${item.score}</span></td>
+                    <td class="p-3 text-center text-xs"><span class="text-emerald-600 font-bold">${item.correct}</span> / <span class="text-rose-500 font-bold">${item.wrong}</span></td>
+                    <td class="p-3 text-slate-400 text-[11px]">${item.date}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function clearAllRecapData() {
+            if (confirm("Apakah Anda yakin ingin menghapus seluruh data rekapitulasi siswa? Data yang dihapus tidak dapat dikembalikan.")) {
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                renderTeacherTable();
+                showAlert("Sukses", "Seluruh data rekapitulasi berhasil diresets.", "info");
+            }
+        }
+
+        /* ==========================================================================
+           7. CETAK & EKSPOR (PDF & EXCEL)
+           ========================================================================== */
+        function printResultCard() {
+            window.print();
+        }
+
+        function exportResultPDF() {
+            const element = document.getElementById('resultPage');
+            const opt = {
+                margin:       [0.3, 0.3, 0.3, 0.3],
+                filename:     `Hasil_Kuis_IPA_${state.studentName.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function exportResultExcel() {
+            const data = [{
+                "Nama Peserta": state.studentName,
+                "Kelas": state.studentClass,
+                "Level Kesulitan": state.selectedLevel.toUpperCase(),
+                "Nilai Akhir": document.getElementById('finalScore').innerText,
+                "Predikat": document.getElementById('scorePredicate').innerText,
+                "Jawaban Benar": document.getElementById('resCorrectCount').innerText,
+                "Jawaban Salah": document.getElementById('resWrongCount').innerText,
+                "Waktu Tempuh": document.getElementById('resTimeSpent').innerText,
+                "Tanggal": new Date().toLocaleString('id-ID')
+            }];
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Hasil Kuis");
+            XLSX.writeFile(workbook, `Hasil_Kuis_${state.studentName.replace(/\s+/g, '_')}.xlsx`);
+        }
+
+        function exportRecapExcel() {
+            const list = getRecapData();
+            if (list.length === 0) {
+                showAlert("Info", "Tidak ada data rekapitulasi untuk diunduh.", "info");
+                return;
+            }
+
+            const exportData = list.map((item, index) => ({
+                "No": index + 1,
+                "Nama Siswa": item.name,
+                "Kelas": item.class,
+                "Level": item.level,
+                "Nilai Akhir": item.score,
+                "Jumlah Benar": item.correct,
+                "Jumlah Salah": item.wrong,
+                "Waktu Tanggal": item.date
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(exportData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Nilai Siswa");
+            XLSX.writeFile(workbook, `Rekap_Nilai_Kuis_IPA_MTsN4Serang.xlsx`);
+        }
+    </script>
+</body>
+</html>
